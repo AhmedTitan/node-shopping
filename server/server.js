@@ -1,17 +1,10 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
-
-let env = process.env.NODE_ENV || "development";
-if (env === "test") {
-  mongoose.connect("mongodb://localhost:27017/ShoppingAPItest");
-} else {
-  mongoose.connect("mongodb://localhost:27017/ShoppingAPI");
-}
+require("./config/config");
 
 const { Product } = require("./models/product");
 const { Customer } = require("./models/customer");
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 
 let app = express();
 app.use(bodyParser.json());

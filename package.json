@@ -7,6 +7,9 @@
     "test": "SET \"NODE_ENV=test\" && mocha server/**/*.test.js",
     "start": "node server/server.js"
   },
+  "engines": {
+    "node": "11.0.0"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
