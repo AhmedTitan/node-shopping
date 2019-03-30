@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "SET \"NODE_ENV=test\" && mocha server/**/*.test.js",
     "start": "node server/server.js"
   },
   "author": "",
@@ -12,7 +12,13 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "express": "^4.16.0",
+    "mongodb": "^3.2.2",
     "mongoose": "^5.4.20",
     "validator": "^10.11.0"
+  },
+  "devDependencies": {
+    "expect": "^23.6.0",
+    "mocha": "^6.0.2",
+    "supertest": "^4.0.2"
   }
 }

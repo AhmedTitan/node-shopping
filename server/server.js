@@ -2,9 +2,16 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
+let env = process.env.NODE_ENV || "development";
+if (env === "test") {
+  mongoose.connect("mongodb://localhost:27017/ShoppingAPItest");
+} else {
+  mongoose.connect("mongodb://localhost:27017/ShoppingAPI");
+}
+
+const { Product } = require("./models/product");
 const { Customer } = require("./models/customer");
 const port = process.env.PORT || 3000;
-mongoose.connect("mongodb://localhost:27017/ShoppingAPI");
 
 let app = express();
 app.use(bodyParser.json());
@@ -30,12 +37,21 @@ app.post("/register", (req, res) => {
         .send({ message: "Unable to register the customer", Error: err.errmsg })
     );
 });
+
 app.get("/", (req, res) => {
   res.send({
     message: "Shopping API"
   });
 });
 
+app.get("/products", (req, res) => {
+  Product.find({}).then(products => {
+    res.send(products);
+  });
+});
+
 app.listen(port, () => {
   console.log(`Server is up on port ${port}.`);
 });
+
+module.exports = { app };
