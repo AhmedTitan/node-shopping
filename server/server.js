@@ -51,8 +51,8 @@ app.post("/login", async (req, res) => {
 
 app.delete("/logout", authenticate, async (req, res) => {
   try {
-    await req.customer.removeToken(req.token);
-    res.send({ message: "logged out" });
+    let result = await req.customer.removeToken(req.token);
+    res.send({ message: "logged out", result });
   } catch (err) {
     res.status(400).send({ error: "user already logged out", err });
   }
@@ -61,7 +61,7 @@ app.delete("/logout", authenticate, async (req, res) => {
 app.patch("/customer", authenticate, (req, res) => {
   let data = _.pick(req.body, ["email", "name"]);
   if (!data.email && !data.name) {
-    return res.status(400).send({ message: "No data recieved" });
+    return res.status(400).send({ message: "Missing data" });
   }
   Customer.findOneAndUpdate(
     { _id: req.customer._id },
@@ -83,10 +83,33 @@ app.get("/products", (req, res) => {
   });
 });
 
-// app.post("/cart/add", authenticate, (req, res) => {
-//   const data = _.pick(req.body, ["productID", "quantity"]);
-//   console.log(data);
-// });
+app.post("/cart/add", authenticate, (req, res) => {
+  const data = _.pick(req.body, ["productID", "quantity"]);
+  req.customer
+    .addToCart(data)
+    .then(result => {
+      res.send(result);
+    })
+    .catch(err => res.status(400).send(err));
+});
+
+app.get("/cart", authenticate, async (req, res) => {
+  let cart = JSON.stringify(req.customer.cart);
+  res.send({ cart: JSON.parse(cart) });
+});
+
+app.get("/cart/remove", authenticate, async (req, res) => {
+  const id = req.body.id;
+  try {
+    const item = await req.customer.removeCartItem(id);
+    if (item.nModified === 0) {
+      return res.send({ message: "Invalid productID" });
+    }
+    res.send({ message: "Item removed", item });
+  } catch (e) {
+    res.send({ message: "Invalid productID" });
+  }
+});
 
 app.get("/", (req, res) => {
   res.send({

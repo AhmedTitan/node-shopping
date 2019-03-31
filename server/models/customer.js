@@ -4,6 +4,8 @@ const validator = require("validator");
 const jwt = require("jsonwebtoken");
 const { ObjectID } = require("mongodb");
 
+const { Product } = require("./product");
+
 const CustomerSchema = new mongoose.Schema({
   email: {
     type: "string",
@@ -64,11 +66,55 @@ CustomerSchema.methods.genAuthToken = function() {
 };
 
 CustomerSchema.methods.removeToken = function(token) {
-  let customer = this;
+  const customer = this;
 
   return customer.update({
     $pull: {
       tokens: { token }
+    }
+  });
+};
+
+CustomerSchema.methods.addToCart = async function(item) {
+  const customer = this;
+  try {
+    const product = await Product.findById(new ObjectID(item.productID));
+
+    if (product === null || product.quantity < item.quantity) {
+      return Promise.reject("Invalid product detail");
+    }
+
+    let cartArr = [...customer.cart];
+    let updatedItem = cartArr.filter(p => p.productID == item.productID);
+    if (updatedItem.length > 0) {
+      updatedItem[0].quantity += item.quantity;
+      if (product.quantity < updatedItem[0].quantity) {
+        return Promise.reject("Please check the quantity");
+      }
+
+      let cartArrfiltered = cartArr.filter(p => p.productID != item.productID);
+      cartArrfiltered.push(updatedItem[0]);
+      customer.cart = [];
+      customer.cart = [...cartArrfiltered];
+      return customer.save();
+    } else {
+      customer.cart = customer.cart.concat([
+        { productID: item.productID, quantity: item.quantity }
+      ]);
+      return customer.save();
+    }
+  } catch (err) {
+    console.log(err);
+    return Promise.reject(err);
+  }
+};
+
+CustomerSchema.methods.removeCartItem = function(id) {
+  const customer = this;
+
+  return customer.update({
+    $pull: {
+      cart: { productID: new ObjectID(id) }
     }
   });
 };

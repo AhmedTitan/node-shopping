@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { ObjectID } = require("mongodb");
 
 var Product = mongoose.model("Product", {
   name: {
@@ -19,16 +20,19 @@ var Product = mongoose.model("Product", {
 
 const products = [
   {
+    _id: new ObjectID("5ca0bf66d885c726507ca88d"),
     name: "product 1",
     price: 150.5,
     quantity: 50
   },
   {
+    _id: new ObjectID("5ca0bf66d885c726507ca88e"),
     name: "product 2",
     price: 1000,
     quantity: 90
   },
   {
+    _id: new ObjectID("5ca0bf66d885c726507ca88f"),
     name: "product 3",
     price: 2000,
     quantity: 10
