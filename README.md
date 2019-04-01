@@ -8,8 +8,9 @@ Prerequisites
 
 •	Install all the JS dependencies using ‘npm install’ command.
 
+Github: https://github.com/AhmedTitan/node-shopping
 
-This API is deployed in heroku is this url to test: Heroku URL: https://stormy-brushlands-63398.herokuapp.com/
+This API is deployed in heroku. Heroku URL: https://stormy-brushlands-63398.herokuapp.com/
 
 API routes.
 
