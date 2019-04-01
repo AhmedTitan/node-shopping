@@ -1,13 +1,18 @@
 # node-shopping
 
 Prerequisites
+
 •	MongoDB.
+
 •	API testing application.
+
 •	Install all the JS dependencies using ‘npm install’ command.
+
 
 This API is deployed in heroku is this url to test: Heroku URL: https://stormy-brushlands-63398.herokuapp.com/
 
 API routes.
+
 This API contains 8 routes.
 
 Route POST /register: Clients should provide an email address, name and password while requesting to the route. This will create a new user in the Users collection in the database. The client should provide the data in following format - {“email”: “email@site.com”, “name”: “Any name”, “password”: “123456”}.
