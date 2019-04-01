@@ -63,6 +63,7 @@ CustomerSchema.methods.toJSON = function() {
 };
 
 CustomerSchema.methods.genAuthToken = function() {
+  //Generates a token
   let customer = this;
   let access = "auth";
   let token = jwt
@@ -74,6 +75,7 @@ CustomerSchema.methods.genAuthToken = function() {
 };
 
 CustomerSchema.methods.removeToken = function(token) {
+  //recieves token as parameter. Deletes the token from the database
   const customer = this;
 
   return customer.update({
@@ -84,17 +86,21 @@ CustomerSchema.methods.removeToken = function(token) {
 };
 
 CustomerSchema.methods.addToCart = async function(item) {
+  //recieves product id and quantity as item object
+  //Add the item to the cart. if item is already added in the the cart, only increases the quantity
   const customer = this;
   try {
     const product = await Product.findById(new ObjectID(item.productID));
 
+    //check if the productid is valid and there is enaugh quantity
     if (product === null || product.quantity < item.quantity) {
       return Promise.reject("Invalid product detail");
     }
 
     let cartArr = [...customer.cart];
-    let updatedItem = cartArr.filter(p => p.productID == item.productID);
+    let updatedItem = cartArr.filter(p => p.productID == item.productID); //filter the item
     if (updatedItem.length > 0) {
+      //if item is already in the cart only increase the quantity
       updatedItem[0].quantity += item.quantity;
       if (product.quantity < updatedItem[0].quantity) {
         return Promise.reject("Please check the quantity");
@@ -106,6 +112,7 @@ CustomerSchema.methods.addToCart = async function(item) {
       customer.cart = [...cartArrfiltered];
       return customer.save();
     } else {
+      //if item is not available in the cart add the item to the cart
       customer.cart = customer.cart.concat([
         { productID: item.productID, quantity: item.quantity }
       ]);
@@ -118,6 +125,7 @@ CustomerSchema.methods.addToCart = async function(item) {
 };
 
 CustomerSchema.methods.removeCartItem = function(id) {
+  //recieves productID as parameter and remove the item from the cart
   const customer = this;
 
   return customer.update({
@@ -128,6 +136,7 @@ CustomerSchema.methods.removeCartItem = function(id) {
 };
 
 CustomerSchema.statics.verifyCustomer = function(email, password) {
+  //Checks if the recieved email and password are valid
   let Customer = this;
   return Customer.findOne({ email: email }).then(res => {
     if (!res) {
@@ -147,6 +156,7 @@ CustomerSchema.statics.verifyCustomer = function(email, password) {
 };
 
 CustomerSchema.statics.findByToken = function(token) {
+  //find the customer using recieved token
   let Customer = this;
   let decode;
   try {
@@ -162,6 +172,8 @@ CustomerSchema.statics.findByToken = function(token) {
 };
 
 CustomerSchema.pre("save", function(next) {
+  //check the password before save the customer
+  //if password is modified hash the new password and save
   var customer = this;
   if (customer.isModified("password")) {
     var newPassword = customer.password;

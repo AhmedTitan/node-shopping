@@ -102,7 +102,7 @@ describe("DELETE /logout", () => {
       .set("x-auth", newCustomer.header)
       .expect(200)
       .expect(res => {
-        expect(res.body.message).toBe("logged out");
+        expect(res.body.message).toBe("Successfully logged out");
       })
       .end(err => {
         if (err) {

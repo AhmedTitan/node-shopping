@@ -19,6 +19,7 @@ var Product = mongoose.model("Product", {
 });
 
 const products = [
+  //creating products
   {
     _id: new ObjectID("5ca0bf66d885c726507ca88d"),
     name: "product 1",
@@ -40,7 +41,9 @@ const products = [
 ];
 
 Product.deleteMany({})
+  //deleting all the data in product collection
   .then(() => {
+    //adding new data
     Product.insertMany(products);
   })
   .catch(err => console.log(err));

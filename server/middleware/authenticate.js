@@ -1,8 +1,9 @@
 const { Customer } = require("../models/customer");
 
 let authenticate = (req, res, next) => {
+  //this method varifies the token
   var token = req.header("x-auth");
-  Customer.findByToken(token)
+  Customer.findByToken(token) //get customer details using recieved token
     .then(res => {
       if (!res) {
         return Promise.reject("Invalid token");

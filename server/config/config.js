@@ -1,4 +1,4 @@
-var env = process.env.NODE_ENV || "development";
+var env = process.env.NODE_ENV || "development"; //assigning environment
 const mongoose = require("mongoose");
 
 if (env == "development") {
@@ -9,6 +9,6 @@ if (env == "development") {
   process.env.MONGODB_URI = "mongodb://localhost:27017/ShoppingAPItest";
 }
 
-mongoose.connect(process.env.MONGODB_URI);
+mongoose.connect(process.env.MONGODB_URI); //connecting database
 
 module.exports = { mongoose };
