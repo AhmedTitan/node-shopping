@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const validator = require("validator");
 const jwt = require("jsonwebtoken");
 const { ObjectID } = require("mongodb");
+const _ = require("lodash");
 
 const { Product } = require("./product");
 
@@ -53,6 +54,13 @@ const CustomerSchema = new mongoose.Schema({
     }
   ]
 });
+
+CustomerSchema.methods.toJSON = function() {
+  var customer = this;
+  var customerObject = customer.toObject();
+
+  return _.pick(customerObject, ["_id", "email", "name"]);
+};
 
 CustomerSchema.methods.genAuthToken = function() {
   let customer = this;

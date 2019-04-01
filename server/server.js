@@ -24,7 +24,7 @@ app.post("/register", async (req, res) => {
 
   try {
     await newCustomer.save();
-    let token = newCustomer.genAuthToken();
+    let token = await newCustomer.genAuthToken();
     res.header("x-auth", token).send(newCustomer);
   } catch (err) {
     res
@@ -88,26 +88,31 @@ app.post("/cart/add", authenticate, (req, res) => {
   req.customer
     .addToCart(data)
     .then(result => {
-      res.send(result);
+      let cart = JSON.stringify(req.customer.cart);
+      res.send(JSON.parse(cart));
     })
     .catch(err => res.status(400).send(err));
 });
 
 app.get("/cart", authenticate, async (req, res) => {
-  let cart = JSON.stringify(req.customer.cart);
-  res.send({ cart: JSON.parse(cart) });
+  try {
+    let cart = JSON.stringify(req.customer.cart);
+    res.send({ cart: JSON.parse(cart) });
+  } catch (e) {
+    res.status(400).send({ messaget: "Please login to access your the cart" });
+  }
 });
 
-app.get("/cart/remove", authenticate, async (req, res) => {
+app.delete("/cart/remove", authenticate, async (req, res) => {
   const id = req.body.id;
   try {
     const item = await req.customer.removeCartItem(id);
     if (item.nModified === 0) {
-      return res.send({ message: "Invalid productID" });
+      return res.status(4000).send({ message: "Invalid productID" });
     }
     res.send({ message: "Item removed", item });
   } catch (e) {
-    res.send({ message: "Invalid productID" });
+    res.status(400).send({ message: "Invalid productID" });
   }
 });
 
